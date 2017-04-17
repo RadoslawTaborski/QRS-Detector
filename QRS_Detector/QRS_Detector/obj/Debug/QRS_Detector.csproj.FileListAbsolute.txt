@@ -18,3 +18,8 @@ E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\obj\Debug\QR
 E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\obj\Debug\QRS_Detector.csproj.GenerateResource.Cache
 E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\obj\Debug\QRS_Detector.exe
 E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\obj\Debug\QRS_Detector.pdb
+E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\bin\Debug\Microsoft.Windows.Shell.dll
+E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\bin\Debug\WPF.Bootstrap.dll
+E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\bin\Debug\Microsoft.Windows.Shell.pdb
+E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\obj\Debug\App.baml
+E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\obj\Debug\Resources.baml

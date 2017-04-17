@@ -4,11 +4,11 @@ using System.Windows.Controls;
 using System.Windows.Shapes;
 using System.Windows.Controls.DataVisualization.Charting;
 using System.Collections.ObjectModel;
-using AForge.Math;
 using System.Windows.Controls.DataVisualization;
 using Microsoft.Win32;
 using System.IO;
 using System.Text;
+using WPF.Bootstrap.Controls;
 
 namespace QRS_Detector
 {
@@ -19,8 +19,10 @@ namespace QRS_Detector
         public MainWindow()
         {
             InitializeComponent();
+            Points = new ObservableCollection<DataPoint>();
             this.MinWidth = 550;
             this.MinHeight = 540;
+            setChart(Points);
         }
 
         private void Load_Click(object sender, RoutedEventArgs e)
@@ -35,51 +37,15 @@ namespace QRS_Detector
                     Chart1.Axes.Clear();
 
                     tbPath.Text = okienko.FileName;
-                    Points = new ObservableCollection<DataPoint>();
-                    byte[] bytes = File.ReadAllBytes(okienko.FileName);
 
-                    var tabCom = new Complex[1024];
+                    Points.Clear();
 
-                    /*for (int i = 0; i < 1024; i++)
+                    for (int i = 0; i < 25; i++)
                     {
-                        tabCom[i] = new Complex(wav.Data[0, i], 0);
-                    }*/
+                        Points.Add(new DataPoint() { X = i, Y = i });
+                    }
 
-                   // FourierTransform.FFT(tabCom, FourierTransform.Direction.Forward);
-
-                    /*for (int i = 0; i < 512; i++)
-                    {
-                        Points.Add(new DataPoint() { X = (wav.SampleRate * i) / 511, Y = tabCom[i].Magnitude * 1000 });
-                    }*/
-
-                    var style = new Style(typeof(Polyline));
-                    style.Setters.Add(new Setter(Polyline.StrokeThicknessProperty, 1d));
-
-                    var pointStyle = new Style(typeof(LineDataPoint));
-                    pointStyle.Setters.Add(new Setter(LineDataPoint.TemplateProperty, null));
-
-                    var HideLegendStyle = new Style(typeof(Legend));
-                    HideLegendStyle.Setters.Add(new Setter(Legend.WidthProperty, 0.0));
-                    HideLegendStyle.Setters.Add(new Setter(Legend.HeightProperty, 0.0));
-                    HideLegendStyle.Setters.Add(new Setter(Legend.VisibilityProperty, Visibility.Collapsed));
-
-                    var series = new LineSeries
-                    {
-                        PolylineStyle = style,
-                        ItemsSource = Points,
-                        DependentValuePath = "Y",
-                        IndependentValuePath = "X",
-                        DataPointStyle = pointStyle,
-                        LegendItemStyle = null,
-                    };
-
-                    var axisY = new LinearAxis { Orientation = AxisOrientation.Y, Title = "Amplitude", ShowGridLines = true, };
-                    var axisX = new LinearAxis { Orientation = AxisOrientation.X, Title = "Frequence[Hz]", ShowGridLines = true, };
-
-                    Chart1.Series.Add(series);
-                    Chart1.Axes.Add(axisX);
-                    Chart1.Axes.Add(axisY);
-                    Chart1.LegendStyle = HideLegendStyle;
+                    setChart(Points);
                 }
             }
             catch (Exception)
@@ -103,7 +69,7 @@ namespace QRS_Detector
             try
             {
                 var okienko = new SaveFileDialog();
-                okienko.Filter = "Pliki (wav)|*.wav";
+                okienko.Filter = "Pliki (txt)|*.txt";
                 if (okienko.ShowDialog() == true && okienko.FileName != "")
                 {
                    /* tbPath2.Text = okienko.FileName;
@@ -124,6 +90,38 @@ namespace QRS_Detector
             {
                 stream.Write(bytes, 0, bytes.Length);
             }
+        }
+
+        void setChart(ObservableCollection<DataPoint> Points)
+        {
+            var style = new Style(typeof(Polyline));
+            style.Setters.Add(new Setter(Polyline.StrokeThicknessProperty, 1d));
+
+            var pointStyle = new Style(typeof(LineDataPoint));
+            pointStyle.Setters.Add(new Setter(LineDataPoint.TemplateProperty, null));
+
+            var HideLegendStyle = new Style(typeof(Legend));
+            HideLegendStyle.Setters.Add(new Setter(Legend.WidthProperty, 0.0));
+            HideLegendStyle.Setters.Add(new Setter(Legend.HeightProperty, 0.0));
+            HideLegendStyle.Setters.Add(new Setter(Legend.VisibilityProperty, Visibility.Collapsed));
+
+            var series = new LineSeries
+            {
+                PolylineStyle = style,
+                ItemsSource = Points,
+                DependentValuePath = "Y",
+                IndependentValuePath = "X",
+                DataPointStyle = pointStyle,
+                LegendItemStyle = null,
+            };
+
+            var axisY = new LinearAxis { Orientation = AxisOrientation.Y, Title = "Y-dane", ShowGridLines = true, };
+            var axisX = new LinearAxis { Orientation = AxisOrientation.X, Title = "X-dane", ShowGridLines = true, };
+
+            Chart1.Series.Add(series);
+            Chart1.Axes.Add(axisX);
+            Chart1.Axes.Add(axisY);
+            Chart1.LegendStyle = HideLegendStyle;
         }
     }
 }

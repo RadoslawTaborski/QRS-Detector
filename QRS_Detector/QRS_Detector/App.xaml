@@ -4,6 +4,11 @@
              xmlns:local="clr-namespace:QRS_Detector"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/WPF.Bootstrap;component/Themes/Default.xaml"/>
+                <ResourceDictionary Source="/Resources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
