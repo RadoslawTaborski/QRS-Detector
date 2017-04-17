@@ -23,9 +23,9 @@ namespace QRS_Detector
             Points = new ObservableCollection<DataPoint>();
             this.MinWidth = 550;
             this.MinHeight = 550;
-            setChart(Points, Brushes.Azure);
+            setChart(Points, new SolidColorBrush(Color.FromRgb(0x84, 0xce, 0xff)));
         }
-
+        
         private void Load_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -47,7 +47,7 @@ namespace QRS_Detector
                         Points.Add(new DataPoint() { X = i, Y = i });
                     }
 
-                    setChart(Points, Brushes.LightBlue);
+                    setChart(Points, new SolidColorBrush(Color.FromRgb(0x84, 0xce, 0xff)));
                 }
             }
             catch (Exception)

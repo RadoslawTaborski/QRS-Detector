@@ -4,28 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dv="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
-        xmlns:datavis="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
-        xmlns:chartingprimitives="clr-namespace:System.Windows.Controls.DataVisualization.Charting.Primitives;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         xmlns:local="clr-namespace:QRS_Detector"
         mc:Ignorable="d"
         Title="QRS Detector" Height="600" Width="800">
-    <Window.Resources>
-        <Style TargetType="dv:LineDataPoint" x:Key="myDataPointStyle" >
-            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}"/>
-        </Style>
-        <Style TargetType="Grid" x:Key="Grid2">
-            <Setter Property="Background" Value="#FF767676" />
-        </Style>
-        <Style TargetType="chartingprimitives:EdgePanel" x:Key="MyEdgePanel">
-
-        </Style>
-        <Style TargetType="dv:Chart" x:Key="MyChart">
-            <Setter Property="Background" Value="#FF464646" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="ChartAreaStyle" Value="{StaticResource MyEdgePanel}"/>
-            <Setter Property="PlotAreaStyle" Value="{StaticResource Grid2}"/>
-        </Style>
-    </Window.Resources>
+    <Window.Resources />
     <Grid Margin="0,0,2,0" Style="{StaticResource MyGrid}">
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -37,7 +19,7 @@
         </Grid.ColumnDefinitions>
         <DockPanel LastChildFill="True" Grid.RowSpan="2">
             <Border  Style="{StaticResource MyBorder}" BorderThickness="1" Width="206" Margin="10,10,0,140" IsEnabled="False">
-                <DataGrid  Style="{StaticResource MyDataGrid}" x:Name="dataGrid"  Margin="10,68,10,0" VerticalAlignment="Top" Height="281"  >
+                <DataGrid  Style="{StaticResource MyDataGrid}" x:Name="dataGrid"  Margin="10,65,10,60"  >
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}" Width="80"/>
                         <DataGridTextColumn Header="Wartość" Binding="{Binding Value}" Width="96"/>
@@ -49,12 +31,12 @@
         <Border  Style="{StaticResource MyBorder}" BorderThickness="1" Margin="0,2,10,10" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Width="158"/>
         <Button x:Name="lSave" Style="{StaticResource MyButton}" Content="Zapisz" HorizontalAlignment="Right" Margin="0,80,180,30" Width="92" Click="Save_Click" Grid.Column="1" Grid.Row="1"/>
         <Button x:Name="lLoad" Style="{StaticResource MyButton}" Content="Wczytaj" HorizontalAlignment="Right" Margin="0,22,180,88" Width="92" Click="Load_Click" Grid.Column="1" Grid.Row="1"/>
-        <Button x:Name="Button2" Style="{StaticResource MyButton}" Content="PRZYCISK1" Click="Button2_Click" Grid.Column="1" HorizontalAlignment="Right" Margin="0,80,42,30" Width="92" Grid.Row="1"/>
-        <Button x:Name="Button1" Style="{StaticResource MyButton}" Content="PRZYCISK2" Click="Button1_Click" Grid.Column="1" Margin="0,22,42,88" Grid.Row="1" HorizontalAlignment="Right" Width="92" />
+        <Button x:Name="Button2" Style="{StaticResource MyButton}" Content="PRZYCISK1" Click="Button2_Click" Grid.Column="1" HorizontalAlignment="Right" Margin="0,80,22,30" Width="133" Grid.Row="1"/>
+        <Button x:Name="Button1" Style="{StaticResource MyButton}" Content="PRZYCISK2" Click="Button1_Click" Grid.Column="1" Margin="0,22,22,88" Grid.Row="1" HorizontalAlignment="Right" Width="133" />
         <Label x:Name="label" Style="{StaticResource MyLabel}" Content="Wczytaj z pliku: " HorizontalContentAlignment="Right" Margin="25,22,0,92" Grid.Row="1" HorizontalAlignment="Left" Width="99"/>
-        <Label x:Name="label2" Style="{StaticResource MyLabel}" Content="Zapisz do pliku: " HorizontalContentAlignment="Right" Margin="25,0,0,30" Grid.Row="1" Height="26" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>
-        <TextBox x:Name="tbPath" Style="{StaticResource MyTextBox}" Margin="124,22,277,88" Grid.Row="1" TextWrapping="Wrap" Text="" IsEnabled="False" Grid.ColumnSpan="2"/>
-        <TextBox x:Name="tbPath2" Style="{StaticResource MyTextBox}" Margin="124,80,277,30" Grid.Row="1" TextWrapping="Wrap" Text="" IsEnabled="False" Grid.ColumnSpan="2"/>
+        <Label x:Name="label2" Style="{StaticResource MyLabel}" Content="Zapisz do pliku: " HorizontalContentAlignment="Right" Margin="25,0,0,33" Grid.Row="1" Height="26" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>
+        <TextBox x:Name="tbPath" Style="{StaticResource MyTextBox}" Margin="124,22,277,88" Grid.Row="1" TextWrapping="Wrap" Text="" IsEnabled="False" Grid.ColumnSpan="2" VerticalAlignment="Center" FontSize="12" />
+        <TextBox x:Name="tbPath2" Style="{StaticResource MyTextBox}" Margin="124,80,277,30" Grid.Row="1" TextWrapping="Wrap" Text="" IsEnabled="False" Grid.ColumnSpan="2" VerticalAlignment="Center" FontSize="12" />
         <Label x:Name="lHeader" Style="{StaticResource MyLabel}" Content="Informacje" Margin="12,10,5,0" FontSize="15"  Height="68" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold"/>
         <dv:Chart x:Name="Chart1" Style="{StaticResource MyChart}" Title="EKG" Grid.Column="1" Margin="0,10,10,0" FontWeight="Bold"/>
     </Grid>
