@@ -3,7 +3,6 @@ E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\bin\Debug\QR
 E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\bin\Debug\QRS_Detector.pdb
 E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.dll
 E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.xml
-E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\obj\Debug\QRS_Detector.csprojResolveAssemblyReference.cache
 E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\obj\Debug\MainWindow.g.cs
 E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\obj\Debug\App.g.cs
 E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\obj\Debug\QRS_Detector_MarkupCompile.cache

@@ -12,6 +12,7 @@
     <SolidColorBrush x:Key="MyLight" Color="Gray" />
     <SolidColorBrush x:Key="MyAzure" Color="#84ceff" />
     <SolidColorBrush x:Key="MyPurple" Color="#68217a" />
+    <SolidColorBrush x:Key="MyWhite" Color="White" />
 
     <Style TargetType="Button" x:Key="MyButton">
         <Setter Property="BorderBrush" Value="{StaticResource MyLight}" />
@@ -20,7 +21,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border Background="{TemplateBinding Background}" BorderBrush="Black" BorderThickness="1">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{StaticResource MyLight}" BorderThickness="1">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                 </ControlTemplate>
@@ -59,9 +60,8 @@
         <Setter Property="Background" Value="{StaticResource MyMediumGrey}" />
         <Setter Property="Foreground" Value="{StaticResource MyAzure}" />
     </Style>
-    
+
     <Style TargetType="DataGrid" x:Key="MyDataGrid">
-        <Setter Property="BorderBrush" Value="{StaticResource MyLight}" />
         <Setter Property="Background" Value="{StaticResource MyDarkGrey}" />
         <Setter Property="Foreground" Value="{StaticResource MyLight}" />
         <Setter Property="ColumnHeaderStyle" Value="{StaticResource MyDataGridColumnHeader}"/>
@@ -84,4 +84,36 @@
         <Setter Property="PlotAreaStyle" Value="{StaticResource Grid2}"/>
     </Style>
 
+    <Style TargetType="DockPanel" x:Key="MyDockPanel">
+        <Setter Property="Background" Value="{StaticResource MyPurple}" />
+    </Style>
+
+    <Style TargetType="TextBlock" x:Key="MyTextBlock">
+        <Setter Property="Foreground" Value="{StaticResource MyWhite}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontFamily" Value="Myanmar Text" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style TargetType="Button" x:Key="MyControlButton">
+        <Setter Property="Background" Value="{x:Null}" />
+        <Setter Property="Foreground" Value="{StaticResource MyLight}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{StaticResource MyWhite}" BorderThickness="1">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource MyAzure}"/>
+                <Setter Property="Foreground" Value="{StaticResource MyDarkGrey}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>
