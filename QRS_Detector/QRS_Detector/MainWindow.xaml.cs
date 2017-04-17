@@ -9,6 +9,7 @@ using Microsoft.Win32;
 using System.IO;
 using System.Text;
 using WPF.Bootstrap.Controls;
+using System.Windows.Media;
 
 namespace QRS_Detector
 {
@@ -21,8 +22,8 @@ namespace QRS_Detector
             InitializeComponent();
             Points = new ObservableCollection<DataPoint>();
             this.MinWidth = 550;
-            this.MinHeight = 540;
-            setChart(Points);
+            this.MinHeight = 550;
+            setChart(Points, Brushes.Azure);
         }
 
         private void Load_Click(object sender, RoutedEventArgs e)
@@ -30,7 +31,7 @@ namespace QRS_Detector
             try
             {
                 var okienko = new OpenFileDialog();
-                okienko.Filter = "Pliki (wav)|*.wav";
+                okienko.Filter = "Pliki (txt)|*.txt";
                 if (okienko.ShowDialog() == true)
                 {
                     Chart1.Series.Clear();
@@ -40,12 +41,13 @@ namespace QRS_Detector
 
                     Points.Clear();
 
+                    //example
                     for (int i = 0; i < 25; i++)
                     {
                         Points.Add(new DataPoint() { X = i, Y = i });
                     }
 
-                    setChart(Points);
+                    setChart(Points, Brushes.LightBlue);
                 }
             }
             catch (Exception)
@@ -92,13 +94,14 @@ namespace QRS_Detector
             }
         }
 
-        void setChart(ObservableCollection<DataPoint> Points)
+        void setChart(ObservableCollection<DataPoint> Points, SolidColorBrush color)
         {
             var style = new Style(typeof(Polyline));
             style.Setters.Add(new Setter(Polyline.StrokeThicknessProperty, 1d));
 
             var pointStyle = new Style(typeof(LineDataPoint));
             pointStyle.Setters.Add(new Setter(LineDataPoint.TemplateProperty, null));
+            pointStyle.Setters.Add(new Setter(BackgroundProperty, color));
 
             var HideLegendStyle = new Style(typeof(Legend));
             HideLegendStyle.Setters.Add(new Setter(Legend.WidthProperty, 0.0));

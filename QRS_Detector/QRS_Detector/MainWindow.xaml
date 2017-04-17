@@ -8,13 +8,16 @@
         xmlns:chartingprimitives="clr-namespace:System.Windows.Controls.DataVisualization.Charting.Primitives;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         xmlns:local="clr-namespace:QRS_Detector"
         mc:Ignorable="d"
-        Title="QRS Detector" Height="558" Width="800">
+        Title="QRS Detector" Height="600" Width="800">
     <Window.Resources>
+        <Style TargetType="dv:LineDataPoint" x:Key="myDataPointStyle" >
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}"/>
+        </Style>
         <Style TargetType="Grid" x:Key="Grid2">
             <Setter Property="Background" Value="#FF767676" />
         </Style>
         <Style TargetType="chartingprimitives:EdgePanel" x:Key="MyEdgePanel">
-            
+
         </Style>
         <Style TargetType="dv:Chart" x:Key="MyChart">
             <Setter Property="Background" Value="#FF464646" />
@@ -33,7 +36,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <DockPanel LastChildFill="True" Grid.RowSpan="2">
-            <Border  Style="{StaticResource MyBorder}" BorderThickness="1" Width="206" Margin="10,10,0,140" IsEnabled="True">
+            <Border  Style="{StaticResource MyBorder}" BorderThickness="1" Width="206" Margin="10,10,0,140" IsEnabled="False">
                 <DataGrid  Style="{StaticResource MyDataGrid}" x:Name="dataGrid"  Margin="10,68,10,0" VerticalAlignment="Top" Height="281"  >
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}" Width="80"/>
