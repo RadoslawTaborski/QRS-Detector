@@ -8,7 +8,9 @@
         xmlns:local="clr-namespace:QRS_Detector"
         mc:Ignorable="d"
         Title="QRS Detector" Height="600" Width="800"
-        AllowsTransparency="True">
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip"
+        Icon="Img/logo.ico">
     <Window.Resources />
     <Grid Margin="0,0,0,0" Style="{StaticResource MyGrid}">
         <Grid.RowDefinitions>
@@ -43,6 +45,7 @@
         <dv:Chart x:Name="Chart1" Style="{StaticResource MyChart}" Title="EKG" Grid.Column="1" Margin="0,40,10,0" FontWeight="Bold"/>
         <DockPanel x:Name="Dock" Grid.ColumnSpan="2" Style="{StaticResource MyDockPanel}" LastChildFill="False" Height="30" VerticalAlignment="Top">
             <DockPanel x:Name="TitleBar" Style="{StaticResource MyDockPanel}" MouseDown="TitleBar_MouseDown" Width="{Binding ActualWidth, ElementName=Dock}">
+                <Image Source="Img/logo.png" DockPanel.Dock="Left" Width="26" Height="26" Margin="13,0,0,0"/>
                 <Button x:Name="CloseButton" Style="{StaticResource MyControlButton}" DockPanel.Dock="Right" Click="CloseButton_Click" HorizontalAlignment="Left" Margin="0,3,10,3" >
                     <Button.Background>
                         <ImageBrush ImageSource="Img/close.png" />
@@ -59,7 +62,7 @@
                     </Button.Background>
                 </Button>
 
-                <TextBlock Style="{StaticResource MyTextBlock}" Margin="70,5,70,0" DockPanel.Dock="Left">QRS Detector</TextBlock>
+                <TextBlock Style="{StaticResource MyTextBlock}" Margin="32,7,70,0" DockPanel.Dock="Left" Height="23">QRS Detector</TextBlock>
             </DockPanel>
         </DockPanel>
     </Grid>

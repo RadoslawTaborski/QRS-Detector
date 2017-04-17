@@ -18,3 +18,4 @@ E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\obj\Release\
 E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\obj\Release\QRS_Detector.csproj.GenerateResource.Cache
 E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\obj\Release\QRS_Detector.exe
 E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\obj\Release\QRS_Detector.pdb
+E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\obj\Release\QRS_Detector.csprojResolveAssemblyReference.cache
