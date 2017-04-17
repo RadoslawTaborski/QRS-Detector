@@ -114,11 +114,5 @@
     <Resource Include="Img\min.png" />
     <Resource Include="Img\minimize.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Img\close_h.png" />
-    <Resource Include="Img\max_h.png" />
-    <Resource Include="Img\minimize_h.png" />
-    <Resource Include="Img\min_h.png" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
