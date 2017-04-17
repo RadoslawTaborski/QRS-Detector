@@ -6,6 +6,11 @@
                     xmlns:datavis="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
                     xmlns:chartingprimitives="clr-namespace:System.Windows.Controls.DataVisualization.Charting.Primitives;assembly=System.Windows.Controls.DataVisualization.Toolkit">
 
+    <BitmapImage x:Key="MyClose" UriSource="../Img/close.png" />
+    <BitmapImage x:Key="MyMax" UriSource="../Img/max.png" />
+    <BitmapImage x:Key="MyMin" UriSource="../Img/min.png" />
+    <BitmapImage x:Key="MyMinimize" UriSource="../Img/minimize.png" />
+
     <SolidColorBrush x:Key="MyDarkGrey" Color="#252526" />
     <SolidColorBrush x:Key="MyMediumGrey" Color="#2d2d30" />
     <SolidColorBrush x:Key="MyLightGrey" Color="#38383c" />
@@ -100,20 +105,26 @@
     <Style TargetType="Button" x:Key="MyControlButton">
         <Setter Property="Background" Value="{x:Null}" />
         <Setter Property="Foreground" Value="{StaticResource MyLight}" />
+        <Setter Property="BorderBrush" Value="{StaticResource MyPurple}" />
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border Background="{TemplateBinding Background}" BorderBrush="{StaticResource MyWhite}" BorderThickness="1">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                    Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" RecognizesAccessKey="True"/>
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="Blue" />
+                            <Setter Property="Cursor" Value="Hand" />
+                            <!-- If we don't tell the background to change on hover, it will remain the same -->
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource MyAzure}"/>
-                <Setter Property="Foreground" Value="{StaticResource MyDarkGrey}"/>
-            </Trigger>
-        </Style.Triggers>
     </Style>
 </ResourceDictionary>

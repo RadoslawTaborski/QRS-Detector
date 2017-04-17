@@ -11,6 +11,8 @@ using System.Text;
 using WPF.Bootstrap.Controls;
 using System.Windows.Media;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
+using System.Windows.Resources;
 
 namespace QRS_Detector
 {
@@ -176,12 +178,25 @@ namespace QRS_Detector
             if (this.WindowState == WindowState.Maximized)
             {
                 this.WindowState = WindowState.Normal;
-                MaxButton.Content = "1";
+                Uri resourceUri = new Uri("Img/max.png", UriKind.Relative);
+                StreamResourceInfo streamInfo = Application.GetResourceStream(resourceUri);
+
+                BitmapFrame temp = BitmapFrame.Create(streamInfo.Stream);
+                var brush = new ImageBrush();
+                brush.ImageSource = temp;
+                MaxButton.Background=brush;
+                
             }
             else
             {
                 this.WindowState = WindowState.Maximized;
-                MaxButton.Content = "2";
+                Uri resourceUri = new Uri("Img/min.png", UriKind.Relative);
+                StreamResourceInfo streamInfo = Application.GetResourceStream(resourceUri);
+
+                BitmapFrame temp = BitmapFrame.Create(streamInfo.Stream);
+                var brush = new ImageBrush();
+                brush.ImageSource = temp;
+                MaxButton.Background = brush;
             }
 
         }

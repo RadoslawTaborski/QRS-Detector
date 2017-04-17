@@ -43,9 +43,21 @@
         <dv:Chart x:Name="Chart1" Style="{StaticResource MyChart}" Title="EKG" Grid.Column="1" Margin="0,40,10,0" FontWeight="Bold"/>
         <DockPanel x:Name="Dock" Grid.ColumnSpan="2" Style="{StaticResource MyDockPanel}" LastChildFill="False" Height="30" VerticalAlignment="Top">
             <DockPanel x:Name="TitleBar" Style="{StaticResource MyDockPanel}" MouseDown="TitleBar_MouseDown" Width="{Binding ActualWidth, ElementName=Dock}">
-                <Button x:Name="CloseButton" Style="{StaticResource MyControlButton}" DockPanel.Dock="Right" Width="24" Height="24" Click="CloseButton_Click" HorizontalAlignment="Left" Margin="0,3,10,3" />
-                <Button x:Name="MaxButton" Style="{StaticResource MyControlButton}" DockPanel.Dock="Right" Width="24" Height="24"  Click="MaximizeButton_Click" HorizontalAlignment="Left" Margin="0,3,5,3" />
-                <Button x:Name="MinButton" Style="{StaticResource MyControlButton}" DockPanel.Dock="Right" Width="24" Height="24" Click="MinimizeButton_Click" HorizontalAlignment="Left" Margin="0,3,5,3" />
+                <Button x:Name="CloseButton" Style="{StaticResource MyControlButton}" DockPanel.Dock="Right" Click="CloseButton_Click" HorizontalAlignment="Left" Margin="0,3,10,3" >
+                    <Button.Background>
+                        <ImageBrush ImageSource="Img/close.png" />
+                    </Button.Background>
+                </Button>
+                <Button x:Name="MaxButton" Style="{StaticResource MyControlButton}" DockPanel.Dock="Right" Click="MaximizeButton_Click" HorizontalAlignment="Left" Margin="0,3,5,3" >
+                    <Button.Background>
+                        <ImageBrush ImageSource="Img/max.png"/>
+                    </Button.Background>
+                </Button>
+                <Button x:Name="MinButton" Style="{StaticResource MyControlButton}" DockPanel.Dock="Right" Click="MinimizeButton_Click" HorizontalAlignment="Left" Margin="0,3,5,3" >
+                    <Button.Background>
+                        <ImageBrush ImageSource="Img/minimize.png"/>
+                    </Button.Background>
+                </Button>
 
                 <TextBlock Style="{StaticResource MyTextBlock}" Margin="70,5,70,0" DockPanel.Dock="Left">QRS Detector</TextBlock>
             </DockPanel>
