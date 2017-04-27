@@ -8,7 +8,18 @@ namespace QRS_Detector
 {
     public class DataPoint
     {
-        public double X { get; set; }
-        public double Y { get; set; }
+        public double Time { get; set; }
+        public double mV { get; set; }
+
+        public DataPoint(double x, double y)
+        {
+            Time = x;
+            mV = y;
+        }
+
+        public override string ToString()
+        {
+            return Time + " " + mV;
+        }
     }
 }
