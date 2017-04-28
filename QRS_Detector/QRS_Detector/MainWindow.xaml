@@ -36,17 +36,20 @@
         <Border  Style="{StaticResource MyBorder}" BorderThickness="1" Margin="0,2,10,10" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Width="158"/>
         <Button x:Name="lSave" Style="{StaticResource MyButton}" Content="Zapisz" HorizontalAlignment="Right" Margin="0,80,180,30" Width="92" Click="Save_Click" Grid.Column="1" Grid.Row="1"/>
         <Button x:Name="lLoad" Style="{StaticResource MyButton}" Content="Wczytaj" HorizontalAlignment="Right" Margin="0,22,180,88" Width="92" Click="Load_Click" Grid.Column="1" Grid.Row="1"/>
-        <Button x:Name="Button2" Style="{StaticResource MyButton}" Content="PRZYCISK1" Click="Button2_Click" Grid.Column="1" HorizontalAlignment="Right" Margin="0,80,22,30" Width="133" Grid.Row="1"/>
-        <Button x:Name="Button1" Style="{StaticResource MyButton}" Content="PRZYCISK2" Click="Button1_Click" Grid.Column="1" Margin="0,22,22,88" Grid.Row="1" HorizontalAlignment="Right" Width="133" />
+        <Button x:Name="Button2" Style="{StaticResource MyButton}" Content="PRZYCISK2" Click="Button2_Click" Grid.Column="1" HorizontalAlignment="Right" Margin="0,80,22,30" Width="133" Grid.Row="1"/>
+        <Button x:Name="Button1" Style="{StaticResource MyButton}" Content="PRZYCISK1" Click="Button1_Click" Grid.Column="1" Margin="0,22,22,88" Grid.Row="1" HorizontalAlignment="Right" Width="133" />
         <Label x:Name="label" Style="{StaticResource MyLabel}" Content="Wczytaj z pliku: " HorizontalContentAlignment="Right" Margin="25,22,0,92" Grid.Row="1" HorizontalAlignment="Left" Width="99"/>
         <Label x:Name="label2" Style="{StaticResource MyLabel}" Content="Zapisz do pliku: " HorizontalContentAlignment="Right" Margin="25,0,0,33" Grid.Row="1" Height="26" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>
-        <TextBox x:Name="tbPath" Style="{StaticResource MyTextBox}" Margin="124,22,277,88" Grid.Row="1" TextWrapping="Wrap" Text="" IsEnabled="False" Grid.ColumnSpan="2" VerticalAlignment="Center" FontSize="12" />
-        <TextBox x:Name="tbPath2" Style="{StaticResource MyTextBox}" Margin="124,80,277,30" Grid.Row="1" TextWrapping="Wrap" Text="" IsEnabled="False" Grid.ColumnSpan="2" VerticalAlignment="Center" FontSize="12" />
+        <TextBox x:Name="tbPath" Style="{StaticResource MyTextBox}" MaxLines="1"  Margin="124,22,277,88" Grid.Row="1" TextWrapping="Wrap" Text="" IsEnabled="False" Grid.ColumnSpan="2" VerticalAlignment="Center" FontSize="12" />
+        <TextBox x:Name="tbPath2" Style="{StaticResource MyTextBox}" MaxLines="1"  Margin="124,80,277,30" Grid.Row="1" TextWrapping="Wrap" Text="" IsEnabled="False" Grid.ColumnSpan="2" VerticalAlignment="Center" FontSize="12" />
         <Label x:Name="lHeader" Style="{StaticResource MyLabel}" Content="Informacje" Margin="12,47,5,0" FontSize="15"  Height="55" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold"/>
         <ScrollViewer x:Name="svChart" Style="{StaticResource MyScrollViewer}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Grid.Column="1" Margin="1,41,11,1" BorderBrush="White">
             <dv:Chart x:Name="Chart1" Style="{StaticResource MyChart}" Title=" " FontWeight="Bold"/>
         </ScrollViewer>
+        <Border  Style="{StaticResource MyBorder}" BorderThickness="1" Margin="0,50,22,0" Grid.Column="1" HorizontalAlignment="Right" Width="146" Height="48" VerticalAlignment="Top"  />
         <Label x:Name="rHeader" Style="{StaticResource MyLabel}" Content="EKG" Margin="0,47,10,0" FontSize="15"  Height="55" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" Grid.Column="1"/>
+        <Button x:Name="Plus" Style="{StaticResource MyButton}" Content="+" Click="Plus_Click" Grid.Column="1" Margin="0,54,99,0" Height="40" VerticalAlignment="Top" HorizontalAlignment="Right" Width="65" />
+        <Button x:Name="Minus" Style="{StaticResource MyButton}" Content="-" Click="Minus_Click" Grid.Column="1" Margin="0,54,26,0" HorizontalAlignment="Right" Width="70" Height="40" VerticalAlignment="Top" />
         <DockPanel x:Name="Dock" Grid.ColumnSpan="2" Style="{StaticResource MyDockPanel}" LastChildFill="False" Height="30" VerticalAlignment="Top">
             <DockPanel x:Name="TitleBar" Style="{StaticResource MyDockPanel}" MouseDown="TitleBar_MouseDown" Width="{Binding ActualWidth, ElementName=Dock}">
                 <Image Source="Img/logo.png" DockPanel.Dock="Left" Width="26" Height="26" Margin="13,0,0,0"/>

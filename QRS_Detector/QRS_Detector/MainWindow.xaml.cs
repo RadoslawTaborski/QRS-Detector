@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Resources;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace QRS_Detector
 {
@@ -22,6 +23,7 @@ namespace QRS_Detector
     {
         public ObservableCollection<DataPoint> Points { get; private set; }
         public EKG signal = new EKG();
+        public double chartWidth;
         public SolidColorBrush myAzure = new SolidColorBrush(Color.FromRgb(0x84, 0xce, 0xff));
         public SolidColorBrush myMediumDark = new SolidColorBrush(Color.FromRgb(0x2d, 0x2d, 0x2d));
 
@@ -31,9 +33,16 @@ namespace QRS_Detector
             Points = new ObservableCollection<DataPoint>();
             this.MinWidth = 550;
             this.MinHeight = 550;
-            setChart(Points, 5, myAzure , myMediumDark);
+            this.Loaded += new System.Windows.RoutedEventHandler(this.AfterLoaded);
         }
-        
+
+        private void AfterLoaded(object sender, EventArgs e)
+        {
+            Console.WriteLine(Chart1.ActualWidth);
+            chartWidth = Chart1.ActualWidth;
+            setChart(Points, 5, myAzure, myMediumDark);
+        }
+
         private async void Load_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -43,23 +52,20 @@ namespace QRS_Detector
                 if (okienko.ShowDialog() == true)
                 {
                     tbPath.Text = okienko.FileName;
-                    Console.WriteLine(tbPath.Text);
-                    string readText="";
+                    signal = new EKG();
+                    string readText = "";
                     if (File.Exists(tbPath.Text))
                     {
                         readText = File.ReadAllText(tbPath.Text);
                     }
-                    //Console.WriteLine(readText);
                     signal.readSignalFromText(readText);
-                    //signal.display();
                     var sig = signal.Signals[14];
-                   // foreach (var sig in signal.Signals)
-                   // {
-                        Points = new ObservableCollection<DataPoint>(sig);
-                       // Chart1 = new Chart();
-                        setChart(Points, 5, myAzure, myMediumDark);
-                        //await Task.Delay(1000);
-                   // }
+                    // foreach (var sig in signal.Signals)
+                    // {
+                    Points = new ObservableCollection<DataPoint>(sig);
+                    setChart(Points, 5, myAzure, myMediumDark);
+                    //  await Task.Delay(1000);
+                    //}
                 }
             }
             catch (Exception)
@@ -70,12 +76,25 @@ namespace QRS_Detector
 
         private void Button1_Click(object sender, RoutedEventArgs e)
         {
-
+            
         }
 
         private void Button2_Click(object sender, RoutedEventArgs e)
         {
+            
+        }
 
+        private void Plus_Click(object sender, RoutedEventArgs e)
+        {
+            Chart1.Width += 50;
+        }
+
+        private void Minus_Click(object sender, RoutedEventArgs e)
+        {
+            if (Chart1.Width >= Chart1.ActualHeight+50)
+                Chart1.Width -= 50;
+            else
+                Chart1.Width = Chart1.ActualHeight;
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
@@ -86,9 +105,9 @@ namespace QRS_Detector
                 okienko.Filter = "Pliki (txt)|*.txt";
                 if (okienko.ShowDialog() == true && okienko.FileName != "")
                 {
-                   /* tbPath2.Text = okienko.FileName;
-                    File.WriteAllBytes(okienko.FileName, wav.HeaderByte);
-                    AppendAllBytes(okienko.FileName, wav.DataByte);*/
+                    /* tbPath2.Text = okienko.FileName;
+                     File.WriteAllBytes(okienko.FileName, wav.HeaderByte);
+                     AppendAllBytes(okienko.FileName, wav.DataByte);*/
                 }
                 MessageBox.Show("Zapisano");
             }
@@ -132,17 +151,17 @@ namespace QRS_Detector
 
             var gridStyle = new Style(typeof(Line));
             gridStyle.Setters.Add(new Setter(Line.StrokeProperty, gridColor));
-            var axisY = new LinearAxis { Orientation = AxisOrientation.Y, Title = "Voltage [mV]", ShowGridLines = true, GridLineStyle=gridStyle};
+            var axisY = new LinearAxis { Orientation = AxisOrientation.Y, Title = "Voltage [mV]", ShowGridLines = true, GridLineStyle = gridStyle };
             var axisX = new LinearAxis { Orientation = AxisOrientation.X, Title = "Time [s]", ShowGridLines = true, GridLineStyle = gridStyle };
 
-            Console.WriteLine("actualyWidth: " + svChart.ActualWidth);
+            Console.WriteLine("actualyWidth: " + chartWidth);
             if (Points.Count != 0)
             {
-                Console.WriteLine("time: " + (double)Points[Points.Count - 1].Time);
-                var width = (double)Points[Points.Count - 1].Time / XMaxValue * svChart.ActualWidth;
-                Console.WriteLine("width: " + width);
-                if (width > svChart.ActualWidth)
+                var width = (double)Points[Points.Count - 1].Time / XMaxValue * (chartWidth)-50;
+                if (width > chartWidth)
                     Chart1.Width = width;
+                else
+                    Chart1.Width = svChart.ActualWidth;
             }
 
             Chart1.Series.Clear();
@@ -197,8 +216,8 @@ namespace QRS_Detector
                 BitmapFrame temp = BitmapFrame.Create(streamInfo.Stream);
                 var brush = new ImageBrush();
                 brush.ImageSource = temp;
-                MaxButton.Background=brush;
-                
+                MaxButton.Background = brush;
+
             }
             else
             {
