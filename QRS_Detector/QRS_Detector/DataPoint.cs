@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace QRS_Detector
 {
-    public class DataPoint
+    public class DataPoint: ICloneable
     {
         public double Time { get; set; }
         public double mV { get; set; }
@@ -20,6 +20,11 @@ namespace QRS_Detector
         public override string ToString()
         {
             return Time + " " + mV;
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 }

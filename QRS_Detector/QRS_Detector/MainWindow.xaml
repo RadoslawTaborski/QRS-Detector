@@ -23,10 +23,11 @@
         </Grid.ColumnDefinitions>
         <DockPanel LastChildFill="True" Grid.RowSpan="2">
             <Border  Style="{StaticResource MyBorder}" BorderThickness="1" Width="206" Margin="10,40,0,140" IsEnabled="False">
-                <DataGrid  Style="{StaticResource MyDataGrid}" x:Name="dataGrid"  Margin="10,65,10,60"  >
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}" Width="80"/>
-                        <DataGridTextColumn Header="Wartość" Binding="{Binding Value}" Width="96"/>
+                <DataGrid  Style="{StaticResource MyDataGrid}" x:Name="dataGrid"  Margin="10,65,10,60" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled">
+                    <DataGrid.Columns >
+                        <DataGridTextColumn Header="Q [s]" Binding="{Binding Q}" Width="62" />
+                        <DataGridTextColumn Header="R [s]" Binding="{Binding R}" Width="62"/>
+                        <DataGridTextColumn Header="S [s]" Binding="{Binding S}" Width="62"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>
@@ -36,7 +37,7 @@
         <Border  Style="{StaticResource MyBorder}" BorderThickness="1" Margin="0,2,10,10" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Width="158"/>
         <Button x:Name="lSave" Style="{StaticResource MyButton}" Content="Zapisz" HorizontalAlignment="Right" Margin="0,80,180,30" Width="92" Click="Save_Click" Grid.Column="1" Grid.Row="1"/>
         <Button x:Name="lLoad" Style="{StaticResource MyButton}" Content="Wczytaj" HorizontalAlignment="Right" Margin="0,22,180,88" Width="92" Click="Load_Click" Grid.Column="1" Grid.Row="1"/>
-        <Button x:Name="Button2" Style="{StaticResource MyButton}" Content="PRZYCISK2" Click="Button2_Click" Grid.Column="1" HorizontalAlignment="Right" Margin="0,80,22,30" Width="133" Grid.Row="1"/>
+        <Button x:Name="Button2" Style="{StaticResource MyButton}" Content="Detekcja" Click="Button2_Click" Grid.Column="1" HorizontalAlignment="Right" Margin="0,80,22,30" Width="133" Grid.Row="1"/>
         <Button x:Name="Button1" Style="{StaticResource MyButton}" Content="PRZYCISK1" Click="Button1_Click" Grid.Column="1" Margin="0,22,22,88" Grid.Row="1" HorizontalAlignment="Right" Width="133" />
         <Label x:Name="label" Style="{StaticResource MyLabel}" Content="Wczytaj z pliku: " HorizontalContentAlignment="Right" Margin="25,22,0,92" Grid.Row="1" HorizontalAlignment="Left" Width="99"/>
         <Label x:Name="label2" Style="{StaticResource MyLabel}" Content="Zapisz do pliku: " HorizontalContentAlignment="Right" Margin="25,0,0,33" Grid.Row="1" Height="26" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>

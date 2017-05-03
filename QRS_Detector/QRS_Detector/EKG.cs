@@ -9,18 +9,18 @@ namespace QRS_Detector
 {
     public class EKG
     {
-        public List<DataPoint>[] Signals {get; set; }
+        public Signal[] Signals {get; set; }
 
         public EKG()
         {
-            Signals = new List<DataPoint>[15];
+            Signals = new Signal[15];
             for(int i=0; i<15; ++i)
             {
-                Signals[i] = new List<DataPoint>();
+                Signals[i] = new Signal();
             }
         }
 
-        public void readSignalFromText(string data)
+        public void readSignalsFromText(string data)
         {
             string[] separators = { " ", "\r", "\t", "\n" };
             string[] words = data.Split(separators, StringSplitOptions.RemoveEmptyEntries);
@@ -35,7 +35,7 @@ namespace QRS_Detector
                 {                
                     double y = Convert.ToDouble(words[16*j + i], CultureInfo.GetCultureInfo("en-us"));
                     //Console.WriteLine(y);
-                    Signals[i-1].Add(new DataPoint(x, y));
+                    Signals[i-1].AddDataPoint(new DataPoint(x, y));
                 }
             }
         }
@@ -44,10 +44,25 @@ namespace QRS_Detector
         {
             foreach (var data in Signals)
             {
-                foreach(var dat in data)
+                foreach(var dat in data.GetSignal())
                     Console.WriteLine(dat);
                 Console.WriteLine(" ");
             }
         }
+
+        public Signal averaging()
+        {
+            var sig = new Signal(Signals[0]);
+
+            foreach(var signal in Signals.Skip(1))
+            {
+                sig = sig + signal;                
+            }
+            sig = sig / Signals.Count();
+            
+            return sig;
+        }
+
+
     }
 }

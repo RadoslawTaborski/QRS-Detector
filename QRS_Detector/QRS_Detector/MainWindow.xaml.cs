@@ -22,16 +22,20 @@ namespace QRS_Detector
     public partial class MainWindow : Window
     {
         public ObservableCollection<DataPoint> Points { get; private set; }
+        public ObservableCollection<DataPoint> Scatter { get; private set; }
         public EKG signal = new EKG();
+        public Signal sig = null;
         public double chartWidth;
         public SolidColorBrush myAzure = new SolidColorBrush(Color.FromRgb(0x84, 0xce, 0xff));
         public SolidColorBrush myMediumDark = new SolidColorBrush(Color.FromRgb(0x2d, 0x2d, 0x2d));
+        public SolidColorBrush myPurple = new SolidColorBrush(Color.FromRgb(0x68, 0x21, 0x7a));
 
         public MainWindow()
         {
             InitializeComponent();
             Points = new ObservableCollection<DataPoint>();
-            this.MinWidth = 550;
+            Scatter = new ObservableCollection<DataPoint>();
+            this.MinWidth = 600;
             this.MinHeight = 550;
             this.Loaded += new System.Windows.RoutedEventHandler(this.AfterLoaded);
         }
@@ -40,10 +44,10 @@ namespace QRS_Detector
         {
             Console.WriteLine(Chart1.ActualWidth);
             chartWidth = Chart1.ActualWidth;
-            setChart(Points, 5, myAzure, myMediumDark);
+            setChart(myMediumDark);
         }
 
-        private async void Load_Click(object sender, RoutedEventArgs e)
+        private void Load_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -58,30 +62,65 @@ namespace QRS_Detector
                     {
                         readText = File.ReadAllText(tbPath.Text);
                     }
-                    signal.readSignalFromText(readText);
-                    var sig = signal.Signals[14];
-                    // foreach (var sig in signal.Signals)
-                    // {
-                    Points = new ObservableCollection<DataPoint>(sig);
-                    setChart(Points, 5, myAzure, myMediumDark);
-                    //  await Task.Delay(1000);
-                    //}
+                    signal.readSignalsFromText(readText);
+                    sig = signal.averaging();
+
+                    Chart1.Series.Clear();
+                    Points = new ObservableCollection<DataPoint>(sig.GetSignal());
+                    setLineSeries(Points, myAzure);
+                    Scatter = new ObservableCollection<DataPoint>();
+                    setScatterSeries(Scatter, 15d, myPurple);
+                    setChartWidth(5d);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 MessageBox.Show("Błąd wczytania");
+                Console.WriteLine(ex.Message);
             }
         }
 
         private void Button1_Click(object sender, RoutedEventArgs e)
         {
-            
+            Scatter.Add(new DataPoint(0.2, 0.4));
+            Scatter.Add(new DataPoint(0.6, 0.3));
         }
 
         private void Button2_Click(object sender, RoutedEventArgs e)
         {
-            
+            var copy = sig.GetSignal().Clone();
+            sig.FFT();
+            sig.BandPassFilter(1000, 5, 15);
+            sig.IFFT();
+            sig.Derivative();
+            sig.Square();
+            sig.Frame(1000);
+            var thresh = sig.mean();
+            sig.aboveThreshold(thresh);
+            var delay = ((int)(0.15 * 1000 / 2));
+            sig.findFrames(delay);
+            sig.findQRS();
+
+            dataGrid.Items.Clear();
+            for (int i = 0; i < sig.R.Count(); ++i)
+            {
+                dataGrid.Items.Add(new { Q = sig.Q[i].Time, R = sig.R[i].Time, S = sig.S[i].Time });
+            }
+
+            Chart1.Series.Clear();
+            Points = new ObservableCollection<DataPoint>(copy);
+            setLineSeries(Points, myAzure);
+
+            if (sig.R != null)
+            {
+                Scatter = new ObservableCollection<DataPoint>(sig.R);
+                setScatterSeries(Scatter, 15d, myPurple);
+                Scatter = new ObservableCollection<DataPoint>(sig.Q);
+                setScatterSeries(Scatter, 15d, myPurple);
+                Scatter = new ObservableCollection<DataPoint>(sig.S);
+                setScatterSeries(Scatter, 15d, myPurple);
+            }
+            setChartWidth(5d);
         }
 
         private void Plus_Click(object sender, RoutedEventArgs e)
@@ -91,7 +130,7 @@ namespace QRS_Detector
 
         private void Minus_Click(object sender, RoutedEventArgs e)
         {
-            if (Chart1.Width >= Chart1.ActualHeight+50)
+            if (Chart1.Width >= Chart1.ActualHeight + 50)
                 Chart1.Width -= 50;
             else
                 Chart1.Width = Chart1.ActualHeight;
@@ -125,7 +164,37 @@ namespace QRS_Detector
             }
         }
 
-        void setChart(ObservableCollection<DataPoint> Points, double XMaxValue, SolidColorBrush plotColor, SolidColorBrush gridColor)
+        void setChart(SolidColorBrush gridColor)
+        {
+            var gridStyle = new Style(typeof(Line));
+            gridStyle.Setters.Add(new Setter(Line.StrokeProperty, gridColor));
+            var axisY = new LinearAxis { Orientation = AxisOrientation.Y, Title = "Voltage [mV]", ShowGridLines = true, GridLineStyle = gridStyle };
+            var axisX = new LinearAxis { Orientation = AxisOrientation.X, Title = "Time [s]", ShowGridLines = true, GridLineStyle = gridStyle };
+
+            var HideLegendStyle = new Style(typeof(Legend));
+            HideLegendStyle.Setters.Add(new Setter(Legend.WidthProperty, 0.0));
+            HideLegendStyle.Setters.Add(new Setter(Legend.HeightProperty, 0.0));
+            HideLegendStyle.Setters.Add(new Setter(Legend.VisibilityProperty, Visibility.Collapsed));
+
+            Chart1.Axes.Add(axisX);
+            Chart1.Axes.Add(axisY);
+            Chart1.LegendStyle = HideLegendStyle;
+        }
+
+        void setChartWidth(double XMaxValue)
+        {
+            Console.WriteLine("actualyWidth: " + chartWidth);
+            if (Points.Count != 0)
+            {
+                var width = (double)Points[Points.Count - 1].Time / XMaxValue * (chartWidth) - 50;
+                if (width > chartWidth)
+                    Chart1.Width = width;
+                else
+                    Chart1.Width = svChart.ActualWidth;
+            }
+        }
+
+        void setLineSeries(ObservableCollection<DataPoint> Points, SolidColorBrush plotColor)
         {
             var style = new Style(typeof(Polyline));
             style.Setters.Add(new Setter(Polyline.StrokeThicknessProperty, 1d));
@@ -133,11 +202,6 @@ namespace QRS_Detector
             var pointStyle = new Style(typeof(LineDataPoint));
             pointStyle.Setters.Add(new Setter(LineDataPoint.TemplateProperty, null));
             pointStyle.Setters.Add(new Setter(BackgroundProperty, plotColor));
-
-            var HideLegendStyle = new Style(typeof(Legend));
-            HideLegendStyle.Setters.Add(new Setter(Legend.WidthProperty, 0.0));
-            HideLegendStyle.Setters.Add(new Setter(Legend.HeightProperty, 0.0));
-            HideLegendStyle.Setters.Add(new Setter(Legend.VisibilityProperty, Visibility.Collapsed));
 
             var series = new LineSeries
             {
@@ -149,29 +213,28 @@ namespace QRS_Detector
                 LegendItemStyle = null,
             };
 
-            var gridStyle = new Style(typeof(Line));
-            gridStyle.Setters.Add(new Setter(Line.StrokeProperty, gridColor));
-            var axisY = new LinearAxis { Orientation = AxisOrientation.Y, Title = "Voltage [mV]", ShowGridLines = true, GridLineStyle = gridStyle };
-            var axisX = new LinearAxis { Orientation = AxisOrientation.X, Title = "Time [s]", ShowGridLines = true, GridLineStyle = gridStyle };
-
-            Console.WriteLine("actualyWidth: " + chartWidth);
-            if (Points.Count != 0)
-            {
-                var width = (double)Points[Points.Count - 1].Time / XMaxValue * (chartWidth)-50;
-                if (width > chartWidth)
-                    Chart1.Width = width;
-                else
-                    Chart1.Width = svChart.ActualWidth;
-            }
-
-            Chart1.Series.Clear();
-            Chart1.Axes.Clear();
             Chart1.Series.Add(series);
-            Chart1.Axes.Add(axisX);
-            Chart1.Axes.Add(axisY);
-            Chart1.LegendStyle = HideLegendStyle;
         }
 
+        void setScatterSeries(ObservableCollection<DataPoint> Points, double size, SolidColorBrush plotColor)
+        {
+            var pointStyle = new Style(typeof(ScatterDataPoint));
+            pointStyle.Setters.Add(new Setter(BorderBrushProperty, myAzure));
+            pointStyle.Setters.Add(new Setter(WidthProperty, size));
+            pointStyle.Setters.Add(new Setter(HeightProperty, size));
+            pointStyle.Setters.Add(new Setter(BackgroundProperty, myPurple));
+
+            var series = new ScatterSeries
+            {
+                ItemsSource = Points,
+                DependentValuePath = "mV",
+                IndependentValuePath = "Time",
+                DataPointStyle = pointStyle,
+                LegendItemStyle = null,
+            };
+
+            Chart1.Series.Add(series);
+        }
 
         private async void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
         {

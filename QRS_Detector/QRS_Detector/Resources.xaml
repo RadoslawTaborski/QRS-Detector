@@ -55,10 +55,47 @@
         <Setter Property="Background" Value="{StaticResource MyMediumGrey}" />
     </Style>
 
+    <Style x:Key="MyDataGridRow"  TargetType="DataGridRow">
+        <Setter Property="Background" Value="{StaticResource MyDarkGrey}" />
+    </Style>
+
+    <Style x:Key="MyDataGridRowHeader"  TargetType="DataGridRowHeader">
+        <Setter Property="Background" Value="{StaticResource MyDarkGrey}" />
+    </Style>
+
     <Style TargetType="DataGridColumnHeader" x:Key="MyDataGridColumnHeader">
         <Setter Property="BorderBrush" Value="{StaticResource MyLight}" />
         <Setter Property="Background" Value="{StaticResource MyMediumGrey}" />
         <Setter Property="Foreground" Value="{StaticResource MyAzure}" />
+        <Style.Triggers>
+            <Trigger Property="SortDirection" Value="{x:Null}">
+                <Setter Property="Background" Value="{DynamicResource DataGridHeaderBackgroundBrush}" />
+                <Setter Property="BorderBrush"  Value="Transparent" />
+            </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver" Value="True" />
+                    <Condition Property="SortDirection" Value="{x:Null}" />
+                </MultiTrigger.Conditions>
+                <Setter Property="Background" Value="{StaticResource MyPurple}" />
+                <Setter Property="BorderBrush" Value="{StaticResource MyPurple}" />
+            </MultiTrigger>
+
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver" Value="true" />
+                    <Condition Property="SortDirection" Value="{x:Null}" />
+                </MultiTrigger.Conditions>
+                <Setter Property="Background" Value="{StaticResource MyPurple}" />
+                <Setter Property="BorderBrush" Value="{StaticResource MyPurple}" />
+            </MultiTrigger>
+            <Trigger Property="SortDirection" Value="Ascending">
+                <Setter Property="Background" Value="{StaticResource MyPurple}" />
+            </Trigger>
+            <Trigger Property="SortDirection" Value="Descending">
+                <Setter Property="Background" Value="{StaticResource MyPurple}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="DataGrid" x:Key="MyDataGrid">
@@ -66,6 +103,8 @@
         <Setter Property="Background" Value="{StaticResource MyDarkGrey}" />
         <Setter Property="Foreground" Value="{StaticResource MyLight}" />
         <Setter Property="ColumnHeaderStyle" Value="{StaticResource MyDataGridColumnHeader}"/>
+        <Setter Property="RowStyle" Value="{StaticResource MyDataGridRow}" />
+        <Setter Property="RowHeaderStyle" Value="{StaticResource MyDataGridRowHeader}" />
     </Style>
 
     <Style x:Key="myScrollBarStyle" TargetType="{x:Type ScrollBar}">
