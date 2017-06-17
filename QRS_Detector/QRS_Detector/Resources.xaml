@@ -105,7 +105,12 @@
         <Setter Property="ColumnHeaderStyle" Value="{StaticResource MyDataGridColumnHeader}"/>
         <Setter Property="RowStyle" Value="{StaticResource MyDataGridRow}" />
         <Setter Property="RowHeaderStyle" Value="{StaticResource MyDataGridRowHeader}" />
-    </Style>
+        <Style.Triggers>
+                <Trigger Property ="IsReadOnly" Value="True">
+                    <Setter Property= "Foreground" Value="Gray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
     <Style x:Key="myScrollBarStyle" TargetType="{x:Type ScrollBar}">
         <Setter Property="Background" Value="{StaticResource MyLightGrey}" />

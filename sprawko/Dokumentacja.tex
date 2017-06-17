@@ -1,0 +1,56 @@
+\documentclass{report}
+\usepackage{polski} %przydatne podczas składania dokumentów w j. polskim
+\usepackage{setspace}
+\usepackage[utf8]{inputenc} %kodowanie znaków, zależne od systemu
+\usepackage[T1]{fontenc} %poprawne składanie polskich czcionek
+\usepackage{subfigure}
+\usepackage{psfrag}
+\usepackage{tgheros}
+\renewcommand{\familydefault}{\sfdefault}
+%pakiety dodające dużo dodatkowych poleceń matematycznych
+\usepackage{amsmath}
+\usepackage{amsfonts}
+%pakiety wspomagające i poprawiające składanie tabel
+\usepackage{supertabular}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{hhline}
+\usepackage{float}
+\usepackage{indentfirst}
+\usepackage{color}
+\usepackage{enumerate}
+\usepackage[a4paper, total={6in, 10in}]{geometry}
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\chapter}{\if@openright\cleardoublepage\else\clearpage\fi}{}{}{}
+\makeatother
+\usepackage{titlesec} 
+
+%definicje własnych poleceń
+\newcommand{\R}{I\!\!R} %symbol liczb rzeczywistych, działa tylko w trybie matematycznym
+\newtheorem{theorem}{Twierdzenie}[section] %nowe otoczenie do składania twierdzeń
+
+\newcommand*{\fancychapterstyle}{%
+\titleformat{\chapter}{\bfseries\huge}{\filright}{1ex}
+{\thechapter . }
+}
+
+%tutaj zaczyna się właściwa treść dokumentu
+\begin{document}
+	\bibliographystyle{unsrt} %tylko gdy używamy BibTeXa, ustawia polski styl bibliografii
+	\include{TitlePage}	
+	\tableofcontents %spis treści
+	\newpage
+	\fancychapterstyle
+	\chapter{Cel projektu}
+	Celem projektu jest stworzenia aplikacji, która ma analizować sygnał EKG pod kątem obecności w nim zespołu QRS. Aplikacja wykrywa początki oraz końce zespołów, a także załamki: Q, R oraz S.\newline
+	
+	\chapter{Algorytm}
+	Celem projektu jest stworzenia aplikacji, która ma analizować sygnał EKG pod kątem obecności w nim zespołu QRS. Aplikacja wykrywa początki oraz końce zespołów, a także załamki: Q, R oraz S.\newline
+	
+	\chapter{Implementacja}
+	
+	\chapter{Analiza wyników}
+	
+	\include{Bibliografia2}
+\end{document}

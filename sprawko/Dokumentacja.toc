@@ -1,0 +1,5 @@
+\contentsline {chapter}{\numberline {1}Cel projektu}{3}
+\contentsline {chapter}{\numberline {2}Algorytm}{3}
+\contentsline {chapter}{\numberline {3}Implementacja}{4}
+\contentsline {chapter}{\numberline {4}Analiza wynik\IeC {\'o}w}{4}
+\contentsline {chapter}{\numberline {5}Bibliografia}{5}

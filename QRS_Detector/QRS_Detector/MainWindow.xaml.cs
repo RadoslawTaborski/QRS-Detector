@@ -16,6 +16,9 @@ using System.Windows.Resources;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Threading;
 
 namespace QRS_Detector
 {
@@ -24,11 +27,17 @@ namespace QRS_Detector
         public ObservableCollection<DataPoint> Points { get; private set; }
         public ObservableCollection<DataPoint> Scatter { get; private set; }
         public EKG signal = new EKG();
-        public Signal sig = null;
+        public static Signal sig = null;
         public double chartWidth;
         public SolidColorBrush myAzure = new SolidColorBrush(Color.FromRgb(0x84, 0xce, 0xff));
+        public SolidColorBrush myBlack = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+        public SolidColorBrush myWhite = new SolidColorBrush(Color.FromRgb(0xf0, 0xf0, 0xf0));
         public SolidColorBrush myMediumDark = new SolidColorBrush(Color.FromRgb(0x2d, 0x2d, 0x2d));
         public SolidColorBrush myPurple = new SolidColorBrush(Color.FromRgb(0x68, 0x21, 0x7a));
+        public List<Task<Signal>> tasks = new List<Task<Signal>>();
+        int blocks = 0;
+        public bool isDrawed=false;
+        public bool isDetected = false;
 
         public MainWindow()
         {
@@ -45,9 +54,124 @@ namespace QRS_Detector
             Console.WriteLine(Chart1.ActualWidth);
             chartWidth = Chart1.ActualWidth;
             setChart(myMediumDark);
+            Button1.IsEnabled=false;
+            Button2.IsEnabled = false;
+            lSave.IsEnabled = false;
         }
 
-        private void Load_Click(object sender, RoutedEventArgs e)
+        //******************************************************************************************************************************/
+
+        Func<object, Signal> action = (object obj) =>
+        {
+            var counter = (int)obj;
+            var sig2 = new Signal();
+            if (counter * 16384 + 16384 < sig.GetSignal().Count)
+                sig2.SetSignal(sig.GetSignal().GetRange(counter * 16384, 16384).Clone());
+            else
+                sig2.SetSignal(sig.GetSignal().GetRange(counter * 16384, sig.GetSignal().Count - counter * 16384).Clone());
+            var copy = sig2.GetSignal().Clone();
+            sig2.FFT();
+            sig2.BandPassFilter(1000, 5, 15);
+            sig2.IFFT();
+            sig2.Derivative();
+            sig2.Square();
+           // var copy4 = sig2.GetSignal().Clone();
+            var frame = new List<DataPoint>();
+            var value = Math.Round(0.15 * 1000);
+            for (var i = 0; i < value; ++i)
+            {
+                frame.Add(new DataPoint(i, 1 / value));
+            }
+            sig2.Conv(frame);
+
+           // var copy2 = sig2.GetSignal().Clone();
+            var thresh = sig2.mean();
+            sig2.findRisingEdge(thresh, 1000);
+            var delay = ((int)(0.15 * 1000 / 2));
+            sig2.findFrames(30);
+            var min = sig.GetSignal().Min(item => item.mV);
+            var max = sig.GetSignal().Max(item => item.mV);
+            sig2.framesToSignal(min, max);
+           // var copy3 = sig2.GetSignal().Clone();
+            sig2.findQRS();
+            Console.WriteLine("end: " + counter);
+            return sig2;
+        };
+
+        private async void Button1_Click(object sender, RoutedEventArgs e)
+        {
+            if (!isDrawed)
+            {
+                Points = new ObservableCollection<DataPoint>(sig.GetSignal());
+                setLineSeries(Points, myAzure);
+                Scatter = new ObservableCollection<DataPoint>();
+                setScatterSeries(Scatter, 15d, myPurple);
+                setChartWidth(5d);
+                drawPoints();
+                isDrawed = true;
+            }
+        }
+
+        public void drawPoints()
+        {
+            for (var j = 0; j < blocks; ++j)
+            {
+                var sig2 = tasks[j].Result;
+
+                //Points = new ObservableCollection<DataPoint>(sig2.copy2);
+                //setLineSeries(Points, myWhite);
+                //Points = new ObservableCollection<DataPoint>(sig2.GetSignal());
+                //setLineSeries(Points, myWhite);
+                //Points = new ObservableCollection<DataPoint>(tmp.GetSignal());
+                //setLineSeries(Points, myBlack);
+
+                if (sig2.R != null)
+                {
+                    Scatter = new ObservableCollection<DataPoint>(sig2.R);
+                    setScatterSeries(Scatter, 8d, myPurple);
+                    Scatter = new ObservableCollection<DataPoint>(sig2.Q);
+                    setScatterSeries(Scatter, 8d, myWhite);
+                    Scatter = new ObservableCollection<DataPoint>(sig2.S);
+                    setScatterSeries(Scatter, 8d, myBlack);
+                }
+            }
+            setChartWidth(5d);
+        }
+
+        private async void Button2_Click(object sender, RoutedEventArgs e)
+        {
+            if (!isDetected)
+            {
+                blocks = (int)Math.Ceiling((decimal)sig.GetSignal().Count / 16384);
+                Console.WriteLine(blocks);
+                for (var j = 0; j < blocks; ++j)
+                {
+                    int counter = j;
+                    tasks.Add(Task<Signal>.Factory.StartNew(action, counter));
+                }
+                Task.WaitAll(tasks.ToArray());
+
+                for (var j = 0; j < blocks; ++j)
+                {
+                    var sig2 = tasks[j].Result;
+                    for (int i = 0; i < sig2.R.Count(); ++i)
+                    {
+                        dataGrid.Items.Add(new { Q = sig2.Q[i].Time, R = sig2.R[i].Time, S = sig2.S[i].Time });
+                        sig.Start.Add(sig2.Start[i]);
+                        sig.End.Add(sig2.End[i]);
+                        sig.Q.Add(sig2.Q[i]);
+                        sig.R.Add(sig2.R[i]);
+                        sig.S.Add(sig2.S[i]);
+                    }
+                }
+                if (isDrawed)
+                    drawPoints();
+                isDetected = true;
+                lSave.IsEnabled = true;
+            }
+        }
+
+        private async void Load_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -65,12 +189,14 @@ namespace QRS_Detector
                     signal.readSignalsFromText(readText);
                     sig = signal.averaging();
 
+                    dataGrid.Items.Clear();
                     Chart1.Series.Clear();
-                    Points = new ObservableCollection<DataPoint>(sig.GetSignal());
-                    setLineSeries(Points, myAzure);
-                    Scatter = new ObservableCollection<DataPoint>();
-                    setScatterSeries(Scatter, 15d, myPurple);
-                    setChartWidth(5d);
+                    isDrawed = false;
+                    isDetected = false;
+                    tasks.Clear();
+                    blocks = 0;
+                    Button1.IsEnabled = true;
+                    Button2.IsEnabled = true;
                 }
             }
             catch (Exception ex)
@@ -78,62 +204,6 @@ namespace QRS_Detector
                 MessageBox.Show("Błąd wczytania");
                 Console.WriteLine(ex.Message);
             }
-        }
-
-        private void Button1_Click(object sender, RoutedEventArgs e)
-        {
-            Scatter.Add(new DataPoint(0.2, 0.4));
-            Scatter.Add(new DataPoint(0.6, 0.3));
-        }
-
-        private void Button2_Click(object sender, RoutedEventArgs e)
-        {
-            var copy = sig.GetSignal().Clone();
-            sig.FFT();
-            sig.BandPassFilter(1000, 5, 15);
-            sig.IFFT();
-            sig.Derivative();
-            sig.Square();
-            sig.Frame(1000);
-            var thresh = sig.mean();
-            sig.aboveThreshold(thresh);
-            var delay = ((int)(0.15 * 1000 / 2));
-            sig.findFrames(delay);
-            sig.findQRS();
-
-            dataGrid.Items.Clear();
-            for (int i = 0; i < sig.R.Count(); ++i)
-            {
-                dataGrid.Items.Add(new { Q = sig.Q[i].Time, R = sig.R[i].Time, S = sig.S[i].Time });
-            }
-
-            Chart1.Series.Clear();
-            Points = new ObservableCollection<DataPoint>(copy);
-            setLineSeries(Points, myAzure);
-
-            if (sig.R != null)
-            {
-                Scatter = new ObservableCollection<DataPoint>(sig.R);
-                setScatterSeries(Scatter, 15d, myPurple);
-                Scatter = new ObservableCollection<DataPoint>(sig.Q);
-                setScatterSeries(Scatter, 15d, myPurple);
-                Scatter = new ObservableCollection<DataPoint>(sig.S);
-                setScatterSeries(Scatter, 15d, myPurple);
-            }
-            setChartWidth(5d);
-        }
-
-        private void Plus_Click(object sender, RoutedEventArgs e)
-        {
-            Chart1.Width += 50;
-        }
-
-        private void Minus_Click(object sender, RoutedEventArgs e)
-        {
-            if (Chart1.Width >= Chart1.ActualHeight + 50)
-                Chart1.Width -= 50;
-            else
-                Chart1.Width = Chart1.ActualHeight;
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
@@ -144,25 +214,50 @@ namespace QRS_Detector
                 okienko.Filter = "Pliki (txt)|*.txt";
                 if (okienko.ShowDialog() == true && okienko.FileName != "")
                 {
-                    /* tbPath2.Text = okienko.FileName;
-                     File.WriteAllBytes(okienko.FileName, wav.HeaderByte);
-                     AppendAllBytes(okienko.FileName, wav.DataByte);*/
+                    tbPath2.Text = okienko.FileName;
+                    using (StreamWriter sw = new StreamWriter(tbPath2.Text))
+                    {
+                        sw.WriteLine("---------------------------------------------WYNIKI DETEKCJI ZESPOŁÓW QRS W SYGNALE EKG------------------------------------------");
+                        sw.WriteLine("");
+                        sw.WriteLine("---------------------------------------------------------------------------------------------------------------------------------");
+                        sw.WriteLine("|\t\t|\t\tPoczątek\t\t|\t\t\tQ\t\t\t|\t\t\tR\t\t\t|\t\t\tS\t\t\t|\t\tKoniec\t\t\t|");
+                        sw.WriteLine("---------------------------------------------------------------------------------------------------------------------------------");
+                        sw.WriteLine("|\tlp.\t|\t[s]\t\t|\t[mV]\t|\t[s]\t\t|\t[mV]\t|\t[s]\t\t|\t[mV]\t|\t[s]\t\t|\t[mV]\t|\t[s]\t\t|\t[mV]\t|");
+                        sw.WriteLine("---------------------------------------------------------------------------------------------------------------------------------");
+                        for(int i=0; i<sig.Start.Count;++i)
+                        {
+                            var one = sig.Start[i];
+                            var two = sig.Q[i];
+                            var three = sig.R[i];
+                            var four = sig.S[i];
+                            var five = sig.End[i];
+                            sw.WriteLine("|\t"+(i+1)+"\t|\t"+ String.Format("{0:N2}", one.Time) +"\t|\t"+ String.Format("{0:N3}", one.mV) +"\t|\t"+ String.Format("{0:N2}", two.Time) +"\t|\t"+ String.Format("{0:N3}", two.mV) +"\t|\t"+ String.Format("{0:N2}", three.Time) +"\t|\t"+ String.Format("{0:N3}", three.mV) +"\t|\t"+ String.Format("{0:N2}", four.Time) +"\t|\t"+ String.Format("{0:N3}", four.mV) +"\t|\t"+ String.Format("{0:N2}", five.Time) +"\t|\t"+ String.Format("{0:N3}", five.mV) + "\t|");
+                        }
+                        sw.WriteLine("---------------------------------------------------------------------------------------------------------------------------------");
+                    }
                 }
                 MessageBox.Show("Zapisano");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                MessageBox.Show("Błąd zapisu");
+                MessageBox.Show("Błąd zapisu "+ex.Message);
             }
         }
 
-        public static void AppendAllBytes(string path, byte[] bytes)
+        private void Plus_Click(object sender, RoutedEventArgs e)
         {
-            using (var stream = new FileStream(path, FileMode.Append))
-            {
-                stream.Write(bytes, 0, bytes.Length);
-            }
+            Chart1.Width += (int)Math.Round(0.1*Chart1.ActualWidth);
         }
+
+        private void Minus_Click(object sender, RoutedEventArgs e)
+        {
+            if (Chart1.Width >= Chart1.ActualHeight + (int)Math.Round(0.1 * Chart1.ActualWidth))
+                Chart1.Width -= (int)Math.Round(0.1 * Chart1.ActualWidth);
+            else
+                Chart1.Width = Chart1.ActualHeight;
+        }
+
+        //******************************************************************************************************************************/
 
         void setChart(SolidColorBrush gridColor)
         {
@@ -222,7 +317,7 @@ namespace QRS_Detector
             pointStyle.Setters.Add(new Setter(BorderBrushProperty, myAzure));
             pointStyle.Setters.Add(new Setter(WidthProperty, size));
             pointStyle.Setters.Add(new Setter(HeightProperty, size));
-            pointStyle.Setters.Add(new Setter(BackgroundProperty, myPurple));
+            pointStyle.Setters.Add(new Setter(BackgroundProperty, plotColor));
 
             var series = new ScatterSeries
             {
@@ -235,6 +330,8 @@ namespace QRS_Detector
 
             Chart1.Series.Add(series);
         }
+
+        //******************************************************************************************************************************/
 
         private async void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
         {

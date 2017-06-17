@@ -12,20 +12,36 @@ namespace QRS_Detector
     {
         private List<DataPoint> signal;
         private List<DataPoint> copy;
+        public List<DataPoint> copy2;
+        public List<List<DataPoint>> peaki;
         private Complex[] fft;
         private List<Frame> frames;
         public List<DataPoint> Q;
         public List<DataPoint> R;
         public List<DataPoint> S;
+        public List<DataPoint> Start;
+        public List<DataPoint> End;
 
         public Signal()
         {
             signal = new List<DataPoint>();
+            peaki = new List<List<DataPoint>>();
+            Q = new List<DataPoint>();
+            R = new List<DataPoint>();
+            S = new List<DataPoint>();
+            Start = new List<DataPoint>();
+            End = new List<DataPoint>();
         }
 
         public Signal(Signal sig)
         {
             signal = new List<DataPoint>(sig.GetSignal());
+            peaki = new List<List<DataPoint>>();
+            Q = new List<DataPoint>();
+            R = new List<DataPoint>();
+            S = new List<DataPoint>();
+            Start = new List<DataPoint>();
+            End = new List<DataPoint>();
         }
 
         public List<DataPoint> GetSignal()
@@ -59,49 +75,11 @@ namespace QRS_Detector
             var result = 0d;
             for (var i = 0; i < signal.Count(); ++i)
             {
-               result += signal[i].mV;
+                result += signal[i].mV;
             }
             result /= signal.Count();
 
             return result;
-        }
-
-        public void aboveThreshold(double thresh)
-        {
-            var result = 0d;
-            for (var i = 0; i < signal.Count(); ++i)
-            {
-                if(signal[i].mV>thresh)
-                    signal[i].mV=1;
-                else
-                    signal[i].mV = 0;
-            }
-            result /= signal.Count();
-        }
-
-        public void findFrames(int delay)
-        {
-            frames = new List<Frame>();
-            var left = new List<int>();
-            var right = new List<int>();
-            for (var i = 1; i < signal.Count()-1; ++i)
-            {
-                if (signal[i].mV - signal[i - 1].mV == 1)
-                    left.Add(i);
-                if (signal[i+1].mV - signal[i].mV == -1)
-                    right.Add(i);
-            }
-            if (right.Count() != 0 && left.Count() != 0)
-            {
-                if (right[1] < left[1])
-                    right.Remove(1);
-                if (left.Last() > right.Last())
-                    left.Remove(left.Count() - 1);
-            }
-            for (var i=0; i<left.Count(); ++i)
-            {
-                frames.Add(new Frame() { left=left[i]-delay, right=right[i]-delay });
-            }
         }
 
         public void HighPassFilter()
@@ -202,7 +180,7 @@ namespace QRS_Detector
                 copy = (List<DataPoint>)Extensions.Clone(signal);
             var tmp = Extensions.Clone(signal);
             var delay = Math.Round(0.15 * Fs);
-            for (var k=0; k<tmp.Count;++k)
+            for (var k = 0; k < tmp.Count; ++k)
             {
                 var sum = 0d;
                 for (var i = 0; i <= delay; ++i)
@@ -210,29 +188,148 @@ namespace QRS_Detector
                     if (k - i >= 0)
                         sum += tmp[k - i].mV;
                 }
-                signal[k].mV = 1/delay*sum;
+                signal[k].mV = 1 / delay * sum;
             }
+        }
 
+        public void Conv(List<DataPoint> frame)
+        {
+            var startTime = signal[0].Time;
+            var temp = new List<DataPoint>();
+            var suma = 0d;
+            int j = 0;
+            var fs = signal[1].Time - signal[0].Time;
+            for (var a = 0; a < signal.Count + frame.Count - 1; ++a)
+            {
+                suma = 0;
+                j = a;
+                for (var i = 0; i <= a; ++i)
+                {
+                    if ((j >= 0) && (j < frame.Count) && (i < signal.Count))
+                    {
+                        suma += signal[i].mV * frame[j].mV;
+                    }
+                    j--;
+                }
+                temp.Add(new DataPoint(startTime+a * fs, suma));
+            }
+            signal = temp;
+            copy2 = Extensions.Clone(temp);
+        }
+
+        /*public void findPeaks(double thresh, double Fs)
+        {           
+            bool start = false;
+            for (var i = 0; i < signal.Count(); ++i)
+            {
+                if (signal[i].mV > thresh && !start)
+                {
+                    peaki.Add(new List<DataPoint>());
+                    List<DataPoint> sublist;
+                    if (i + (int)Math.Round(0.15 * Fs) < signal.Count)
+                        sublist = signal.GetRange(i, (int)Math.Round(0.15 * Fs));
+                    else
+                        sublist = signal.GetRange(i, signal.Count - i);
+                    double sum = 0;
+                    for(var j=5; j < sublist.Count - 5; ++j)
+                    {
+
+                    }
+                }
+            }
+        }*/
+
+        public void findRisingEdge(double thresh, double Fs)
+        {       
+            int item = signal.Count;
+            var copy = Extensions.Clone(signal);
+            signal.Select(signal => { signal.mV = 0; return signal; }).ToList();
+            bool start = false;
+            for (var i = 0; i < copy.Count(); ++i)
+            {
+                if (copy[i].mV > thresh && !start)
+                {
+                    List<DataPoint> sublist;
+                    if (i + (int)Math.Round(0.15 * Fs) < copy.Count)
+                        sublist = copy.GetRange(i, (int)Math.Round(0.15 * Fs));
+                    else
+                        sublist = copy.GetRange(i, copy.Count - i);
+                    item = i + (!sublist.Any() ? -1 : sublist.Select((value, index) => new { Value = value, Index = index })
+                                                        .Aggregate((a, b) => (a.Value.mV > b.Value.mV) ? a : b)
+                                                        .Index);
+
+                    for (var j = i; j <= item; ++j)
+                    {
+                        signal[j].mV = 1;
+                    }
+                    start = true;
+                    i += sublist.Count - 1;
+                }
+                else if (copy[i].mV < thresh && start)
+                {
+                    start = false;
+                    --i;
+                }
+            }
+        }
+
+        public void findFrames(int delay)
+        {
+            frames = new List<Frame>();
+            var left = new List<int>();
+            var right = new List<int>();
+            for (var i = 1; i < signal.Count() - 1; ++i)
+            {
+                if (signal[i].mV - signal[i - 1].mV == 1)
+                    left.Add(i);
+                if (signal[i + 1].mV - signal[i].mV == -1)
+                    right.Add(i);
+            }
+            if (right.Count() != 0 && left.Count() != 0)
+            {
+                if (right[1] < left[1])
+                    right.Remove(1);
+                if (left.Last() > right.Last())
+                    left.Remove(left.Count() - 1);
+            }
+            for (var i = 0; i < left.Count(); ++i)
+            {
+                frames.Add(new Frame() { left = left[i] - delay, right = right[i] - delay });
+            }
+        }
+
+        public void framesToSignal(double min, double max)
+        {
+            signal.Select(signal => { signal.mV = min; return signal; }).ToList();
+            foreach (var item in frames)
+            {
+                if(item.left>0)
+                for(var i=item.left; i <= item.right; ++i)
+                {
+                    signal[i].mV = max;
+                }
+            }
         }
 
         public void findQRS()
         {
-            Q = new List<DataPoint>();
-            R = new List<DataPoint>();
-            S = new List<DataPoint>();
-
             foreach (var frame in frames)
             {
-                var sublist = copy.GetRange(frame.left, frame.right-frame.left);
-                var item = sublist.MaxBy(x => x.mV);
-                R.Add(item);
-                var index=sublist.IndexOf(item);
-                var subsublist = sublist.GetRange(0, index);
-                item = subsublist.MinBy(x => x.mV);
-                Q.Add(item);
-                subsublist = sublist.GetRange(index, sublist.Count() - index);
-                item = subsublist.MinBy(x => x.mV);
-                S.Add(item);
+                if (frame.left > 0 && frame.right < copy.Count)
+                {
+                    var sublist = copy.GetRange(frame.left, frame.right - frame.left);
+                    Start.Add(sublist[0]);
+                    End.Add(sublist[sublist.Count-1]);
+                    var item = sublist.MaxBy(x => x.mV);
+                    R.Add(item);
+                    var index = sublist.IndexOf(item);
+                    var subsublist = sublist.GetRange(0, index);
+                    item = subsublist.MinBy(x => x.mV);
+                    Q.Add(item);
+                    subsublist = sublist.GetRange(index, sublist.Count() - index);
+                    item = subsublist.MinBy(x => x.mV);
+                    S.Add(item);
+                }
             }
         }
 
@@ -270,4 +367,5 @@ namespace QRS_Detector
         }
 
     }
+
 }
