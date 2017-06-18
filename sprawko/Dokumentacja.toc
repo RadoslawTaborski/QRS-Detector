@@ -1,5 +1,6 @@
 \contentsline {chapter}{\numberline {1}Cel projektu}{3}
-\contentsline {chapter}{\numberline {2}Algorytm}{3}
-\contentsline {chapter}{\numberline {3}Implementacja}{4}
-\contentsline {chapter}{\numberline {4}Analiza wynik\IeC {\'o}w}{4}
-\contentsline {chapter}{\numberline {5}Bibliografia}{5}
+\contentsline {chapter}{\numberline {2}Funkcjonalno\IeC {\'s}\IeC {\'c} aplikacji}{3}
+\contentsline {chapter}{\numberline {3}Algorytm}{3}
+\contentsline {chapter}{\numberline {4}Interfejs u\IeC {\.z}ytkownika}{5}
+\contentsline {chapter}{\numberline {5}Prezentacja dzia\IeC {\l }ania}{6}
+\contentsline {chapter}{\numberline {6}Bibliografia}{9}

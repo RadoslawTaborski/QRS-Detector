@@ -11,7 +11,7 @@ namespace QRS_Detector
     public class Signal
     {
         private List<DataPoint> signal;
-        private List<DataPoint> copy;
+        public List<DataPoint> copy;
         public List<DataPoint> copy2;
         public List<List<DataPoint>> peaki;
         private Complex[] fft;
@@ -140,7 +140,7 @@ namespace QRS_Detector
                 copy = (List<DataPoint>)Extensions.Clone(signal);
             FourierTransform.FFT(fft, FourierTransform.Direction.Backward);
 
-            for (var i = 0; i < signal.Count(); ++i) //TODO: signal.Count
+            for (var i = 0; i < signal.Count(); ++i) 
             {
                 signal[i].mV = fft[i].Re;
             }
@@ -213,6 +213,12 @@ namespace QRS_Detector
                 }
                 temp.Add(new DataPoint(startTime+a * fs, suma));
             }
+
+            var max=temp.Max(x=>x.mV);
+            for(var i=0; i < temp.Count; ++i)
+            {
+                temp[i].mV /= max;
+            }
             signal = temp;
             copy2 = Extensions.Clone(temp);
         }
@@ -273,7 +279,7 @@ namespace QRS_Detector
             }
         }
 
-        public void findFrames(int delay)
+        public void findFrames(int delay, double Fs)
         {
             frames = new List<Frame>();
             var left = new List<int>();
@@ -294,6 +300,7 @@ namespace QRS_Detector
             }
             for (var i = 0; i < left.Count(); ++i)
             {
+                if(right[i]-left[i]>0.06*Fs)
                 frames.Add(new Frame() { left = left[i] - delay, right = right[i] - delay });
             }
         }
@@ -318,9 +325,9 @@ namespace QRS_Detector
                 if (frame.left > 0 && frame.right < copy.Count)
                 {
                     var sublist = copy.GetRange(frame.left, frame.right - frame.left);
-                    Start.Add(sublist[0]);
-                    End.Add(sublist[sublist.Count-1]);
                     var item = sublist.MaxBy(x => x.mV);
+                    Start.Add(sublist[0]);
+                    End.Add(sublist[sublist.Count - 1]);
                     R.Add(item);
                     var index = sublist.IndexOf(item);
                     var subsublist = sublist.GetRange(0, index);
@@ -329,6 +336,29 @@ namespace QRS_Detector
                     subsublist = sublist.GetRange(index, sublist.Count() - index);
                     item = subsublist.MinBy(x => x.mV);
                     S.Add(item);
+                }
+            }
+        }
+
+        public void deleteFailQRS()
+        {
+            if (R.Count != 0 && R != null)
+            {
+                var max = R.Max(x => x.mV);
+                int index = R.FindIndex(t => t.mV == max);
+                var distance = R[index].mV - Q[index].mV;
+                Console.WriteLine("DIST: "+distance);
+                for (int i = 0; i < R.Count; ++i)
+                {
+                    if (R[i].mV-Q[i].mV < 0.20 * distance)
+                    {
+                        Start.RemoveAt(i);
+                        Q.RemoveAt(i);
+                        R.RemoveAt(i);
+                        S.RemoveAt(i);
+                        End.RemoveAt(i);
+                        i--;
+                    }
                 }
             }
         }
@@ -355,6 +385,18 @@ namespace QRS_Detector
         }
 
         public static Signal operator /(Signal lhs, int div)
+        {
+            var sig = new Signal(lhs);
+
+            for (var i = 0; i < sig.GetSignal().Count(); ++i)
+            {
+                sig.GetSignal()[i].mV /= div;
+            }
+
+            return sig;
+        }
+
+        public static Signal operator /(Signal lhs, double div)
         {
             var sig = new Signal(lhs);
 

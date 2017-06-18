@@ -19,3 +19,10 @@ E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\bin\Debug\Mi
 E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\obj\Debug\App.baml
 E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\obj\Debug\Resources.baml
 E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\obj\Debug\QRS_Detector.csprojResolveAssemblyReference.cache
+E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\bin\Debug\AForge.dll
+E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\bin\Debug\AForge.Math.dll
+E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\bin\Debug\MoreLinq.dll
+E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\bin\Debug\System.ValueTuple.dll
+E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\bin\Debug\AForge.xml
+E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\bin\Debug\AForge.Math.xml
+E:\PWr\magisterskie\Semestr_I\ZIM\Projekt\QRS_Detector\QRS_Detector\bin\Debug\MoreLinq.xml
