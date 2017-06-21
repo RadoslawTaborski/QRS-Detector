@@ -21,6 +21,7 @@ namespace QRS_Detector
         public List<DataPoint> S;
         public List<DataPoint> Start;
         public List<DataPoint> End;
+        public double Fs=0;
 
         public Signal()
         {
@@ -57,6 +58,12 @@ namespace QRS_Detector
         internal void AddDataPoint(DataPoint dataPoint)
         {
             signal.Add(dataPoint);
+        }
+
+        public void setFrequency()
+        {
+            if (signal.Count >= 1)
+                Fs = (1 / (signal[1].Time-signal[0].Time));
         }
 
         public double maxAbsValue()
@@ -109,7 +116,7 @@ namespace QRS_Detector
             Console.WriteLine(paddedLength);
             fft = new Complex[paddedLength];
 
-            for (int i = 0; i < signal.Count(); i++) //TODO: signal.Count
+            for (int i = 0; i < signal.Count(); i++) 
             {
                 fft[i] = new Complex(signal[i].mV, 0);
             }
@@ -117,7 +124,7 @@ namespace QRS_Detector
             FourierTransform.FFT(fft, FourierTransform.Direction.Forward);
         }
 
-        public void BandPassFilter(double Fs, double a, double b)
+        public void BandPassFilter(double a, double b)
         {
             if (fft != null)
             {
@@ -174,7 +181,7 @@ namespace QRS_Detector
             }
         }
 
-        public void Frame(double Fs)
+        public void Frame()
         {
             if (copy == null)
                 copy = (List<DataPoint>)Extensions.Clone(signal);
@@ -223,29 +230,7 @@ namespace QRS_Detector
             copy2 = Extensions.Clone(temp);
         }
 
-        /*public void findPeaks(double thresh, double Fs)
-        {           
-            bool start = false;
-            for (var i = 0; i < signal.Count(); ++i)
-            {
-                if (signal[i].mV > thresh && !start)
-                {
-                    peaki.Add(new List<DataPoint>());
-                    List<DataPoint> sublist;
-                    if (i + (int)Math.Round(0.15 * Fs) < signal.Count)
-                        sublist = signal.GetRange(i, (int)Math.Round(0.15 * Fs));
-                    else
-                        sublist = signal.GetRange(i, signal.Count - i);
-                    double sum = 0;
-                    for(var j=5; j < sublist.Count - 5; ++j)
-                    {
-
-                    }
-                }
-            }
-        }*/
-
-        public void findRisingEdge(double thresh, double Fs)
+        public void findRisingEdge(double thresh)
         {       
             int item = signal.Count;
             var copy = Extensions.Clone(signal);
@@ -279,7 +264,7 @@ namespace QRS_Detector
             }
         }
 
-        public void findFrames(int delay, double Fs)
+        public void findFrames(int delay)
         {
             frames = new List<Frame>();
             var left = new List<int>();

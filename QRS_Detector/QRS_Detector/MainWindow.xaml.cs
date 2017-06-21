@@ -69,8 +69,9 @@ namespace QRS_Detector
                 sig2.SetSignal(sig.GetSignal().GetRange(counter * 16384, 16384).Clone());
             else
                 sig2.SetSignal(sig.GetSignal().GetRange(counter * 16384, sig.GetSignal().Count - counter * 16384).Clone());
+            sig2.setFrequency();
             sig2.FFT();
-            sig2.BandPassFilter(1000, 5, 15);
+            sig2.BandPassFilter(5, 15);
             sig2.IFFT();
             return sig2;
         };
@@ -91,13 +92,6 @@ namespace QRS_Detector
 
         public void drawPoints()
         {
-                //Points = new ObservableCollection<DataPoint>(sig.copy2);
-                //setLineSeries(Points, myWhite);
-                //Points = new ObservableCollection<DataPoint>(sig2.GetSignal());
-                //setLineSeries(Points, myWhite);
-                //Points = new ObservableCollection<DataPoint>(tmp.GetSignal());
-                //setLineSeries(Points, myBlack);
-
                 if (sig.R != null)
                 {
                     Scatter = new ObservableCollection<DataPoint>(sig.R);
@@ -109,6 +103,7 @@ namespace QRS_Detector
                 }
             setChartWidth(5d);
         }
+
 
         private async void Button2_Click(object sender, RoutedEventArgs e)
         {
@@ -130,9 +125,9 @@ namespace QRS_Detector
                     tmpList.AddRange(sig2.GetSignal());
                 }
                 sig.SetSignal(tmpList);
+                sig.setFrequency();
                 sig.Derivative();
                 sig.Square();
-                // var copy4 = sig2.GetSignal().Clone();
                 var frame = new List<DataPoint>();
                 var value = Math.Round(0.15 * 1000);
                 for (var i = 0; i < value; ++i)
@@ -141,15 +136,14 @@ namespace QRS_Detector
                 }
                 sig.Conv(frame);
 
-                // var copy2 = sig2.GetSignal().Clone();
                 var thresh = sig.mean();
-                sig.findRisingEdge(thresh, 1000);
-                var delay = ((int)(0.15 * 1000 / 2));
-                sig.findFrames(30, 1000);
+                sig.findRisingEdge(thresh);
+                var delay = ((int)(0.15 * sig.Fs / 2));
+                sig.findFrames(30);
                 var min = sig.GetSignal().Min(item => item.mV);
                 var max = sig.GetSignal().Max(item => item.mV);
                 sig.framesToSignal(min, max);
-                // var copy3 = sig2.GetSignal().Clone();
+
                 sig.findQRS();
                 sig.deleteFailQRS();
 
@@ -181,9 +175,9 @@ namespace QRS_Detector
                         readText = File.ReadAllText(tbPath.Text);
                     }
                     signal.readSignalsFromText(readText);
-                    sig = signal.averaging();
+                    sig = signal.averaging(); // V5 -10 ; V2-7
+                    sig.setFrequency();
                     sig.copy = Extensions.Clone(sig.GetSignal());
-
                     dataGrid.Items.Clear();
                     Chart1.Series.Clear();
                     isDrawed = false;

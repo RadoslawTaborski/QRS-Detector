@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6210 64-bit) (preloaded format=pdflatex 2017.3.23)  18 JUN 2017 00:55
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6210 64-bit) (preloaded format=pdflatex 2017.3.23)  18 JUN 2017 12:58
 entering extended mode
 **./Dokumentacja.tex
 (Dokumentacja.tex
@@ -781,9 +781,9 @@ File: sig.png Graphic file (type png)
  <use sig.png>
 Package pdftex.def Info: sig.png used on input line 79.
 (pdftex.def)             Requested size: 346.89731pt x 156.17644pt.
+ [4 <./EKG.png> <./sig.png>]
 LaTeX Font Info:    Try loading font information for OML+plm on input line 88.
-
-("C:\Program Files\MiKTeX 2.9\tex\latex\polski\omlplm.fd"
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\polski\omlplm.fd"
 File: omlplm.fd 2008/02/24 v1.2.1 Font defs for fonts PL (MW)
 )
 LaTeX Font Info:    Try loading font information for OMS+plsy on input line 88.
@@ -813,61 +813,77 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 88.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) [4 <./EKG.png> <./sig.png>]
+)
 Underfull \hbox (badness 10000) in paragraph at lines 92--96
 
  []
 
+<algorytm.png, id=20, 967.36406pt x 392.96812pt>
+File: algorytm.png Graphic file (type png)
+ <use algorytm.png>
+Package pdftex.def Info: algorytm.png used on input line 105.
+(pdftex.def)             Requested size: 433.62pt x 176.15044pt.
+
 Rozdzia\PlPrIeC {\l } 4.
 
-Underfull \hbox (badness 10000) in paragraph at lines 104--105
+Underfull \hbox (badness 10000) in paragraph at lines 112--113
 
  []
 
-<GUI.png, id=24, 904.88063pt x 452.4403pt>
+[5 <./algorytm.png>] <GUI.png, id=30, 904.88063pt x 452.4403pt>
 File: GUI.png Graphic file (type png)
  <use GUI.png>
-Package pdftex.def Info: GUI.png used on input line 119.
+Package pdftex.def Info: GUI.png used on input line 127.
 (pdftex.def)             Requested size: 433.62pt x 216.80989pt.
- [5]
+
 Rozdzia\PlPrIeC {\l } 5.
-<okno_dialogowe.png, id=30, 936.49875pt x 513.41812pt>
+[6 <./GUI.png>] <okno_dialogowe.png, id=34, 936.49875pt x 513.41812pt>
 File: okno_dialogowe.png Graphic file (type png)
 
 <use okno_dialogowe.png>
-Package pdftex.def Info: okno_dialogowe.png used on input line 130.
+Package pdftex.def Info: okno_dialogowe.png used on input line 138.
 (pdftex.def)             Requested size: 433.62pt x 237.72635pt.
- [6 <./GUI.png>]
-<wejscie.png, id=34, 958.3303pt x 377.15906pt>
+ <wejscie.png, id=35, 958.3303pt x 377.15906pt>
 File: wejscie.png Graphic file (type png)
- <use wejscie.png>
-Package pdftex.def Info: wejscie.png used on input line 139.
-(pdftex.def)             Requested size: 433.62pt x 170.65231pt.
 
-<wykres.png, id=35, 904.88063pt x 452.4403pt>
+<use wejscie.png>
+Package pdftex.def Info: wejscie.png used on input line 147.
+(pdftex.def)             Requested size: 433.62pt x 170.65231pt.
+ [7 <./okno_dialogowe.png>]
+<wykres.png, id=40, 904.88063pt x 452.4403pt>
 File: wykres.png Graphic file (type png)
  <use wykres.png>
-Package pdftex.def Info: wykres.png used on input line 149.
+Package pdftex.def Info: wykres.png used on input line 157.
 (pdftex.def)             Requested size: 433.62pt x 216.80989pt.
- [7 <./okno_dialogowe.png> <./wejscie.png>] <wynik.png, id=40, 982.42032pt x 28
-7.57437pt>
+ [8 <./wejscie.png> <./wykres.png>] <wynik.png, id=44, 982.42032pt x 287.57437p
+t>
 File: wynik.png Graphic file (type png)
 
 <use wynik.png>
-Package pdftex.def Info: wynik.png used on input line 159.
+Package pdftex.def Info: wynik.png used on input line 167.
 (pdftex.def)             Requested size: 433.62pt x 126.92802pt.
- [8 <./wykres.png> <./wynik.png>]
+ [9 <./wynik.png>]
 \openout2 = `Bibliografia2.aux'.
 
  (Bibliografia2.tex
 Rozdzia\PlPrIeC {\l } 6.
 
-Overfull \hbox (5.28746pt too wide) in paragraph at lines 7--8
+Underfull \hbox (badness 10000) in paragraph at lines 6--7
+
+ []
+
+
+Overfull \hbox (5.28746pt too wide) in paragraph at lines 8--9
 []\T1/qhv/m/n/10.95 http://people.ece.cornell.edu/land/courses/ece5030/labs/s20
 13/QRS_detect_review.pdf
  []
 
-) [9
+
+Underfull \hbox (badness 10000) in paragraph at lines 10--11
+
+ []
+
+) [10
 
 ] (Dokumentacja.aux (TitlePage.aux) (Bibliografia2.aux))
 
@@ -875,10 +891,10 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 4700 strings out of 493333
- 60729 string characters out of 3139194
- 139658 words of memory out of 3000000
- 8074 multiletter control sequences out of 15000+200000
+ 4706 strings out of 493333
+ 60822 string characters out of 3139194
+ 138671 words of memory out of 3000000
+ 8079 multiletter control sequences out of 15000+200000
  30661 words of font info for 40 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  37i,7n,33p,792b,239s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -894,9 +910,9 @@ iKTeX 2.9/fonts/type1/public/pl/plsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/ty
 pe1/public/tex-gyre/qhvb.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/te
 x-gyre/qhvbi.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/tex-gyre/qhvr.
 pfb>
-Output written on Dokumentacja.pdf (9 pages, 361683 bytes).
+Output written on Dokumentacja.pdf (10 pages, 381893 bytes).
 PDF statistics:
- 83 PDF objects out of 1000 (max. 8388607)
+ 87 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 36 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 41 words of extra memory for PDF output out of 10000 (max. 10000000)
 
